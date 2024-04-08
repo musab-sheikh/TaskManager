@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:task_manager/Providers/task_provider.dart';
 import 'package:task_manager/Task_Management/task_model.dart';
+import 'package:task_manager/UI/theme_manager.dart';
 
 
 class AddEditTaskScreen extends StatefulWidget {
@@ -47,9 +48,20 @@ class _AddEditTaskScreenState extends State<AddEditTaskScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.task == null ? 'Add Task' : 'Edit Task'),
-      ),
+      appBar:AppBar(
+                title: Text(widget.task == null ? 'Add Task' : 'Edit Task'),
+  actions: [
+    IconButton(
+      icon: Icon(Icons.brightness_6),
+      onPressed: () {
+        final themeManager = Provider.of<ThemeManager>(context, listen: false);
+        themeManager.setTheme(themeManager.getTheme().brightness == Brightness.dark
+            ? ThemeData.light()
+            : ThemeData.dark());
+      },
+    ),
+  ],
+),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -58,7 +70,7 @@ class _AddEditTaskScreenState extends State<AddEditTaskScreen> {
             children: <Widget>[
               TextFormField(
                 initialValue: _name,
-                decoration: InputDecoration(labelText: 'Name'),
+                decoration: InputDecoration(labelText: 'Task Name'),
                 onSaved: (value) => _name = value!,
                 validator: (value) {
                   if (value!.isEmpty) {
@@ -69,7 +81,7 @@ class _AddEditTaskScreenState extends State<AddEditTaskScreen> {
               ),
               TextFormField(
                 initialValue: _job,
-                decoration: InputDecoration(labelText: 'Job'),
+                decoration: InputDecoration(labelText: 'Task Description'),
                 onSaved: (value) => _job = value!,
                 validator: (value) {
                   if (value!.isEmpty) {
