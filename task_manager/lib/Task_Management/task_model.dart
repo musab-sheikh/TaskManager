@@ -19,9 +19,9 @@
 
 
 class Task {
-  final int id;
-  final String name;
-  final String job;
+  int id;
+  String name;
+  String job;
 
   Task({required this.id, required this.name, required this.job});
 
@@ -33,10 +33,11 @@ class Task {
     );
   }
 
-  Map<String, dynamic> toJson() => {
-        'id': id,
-        'name': name,
-        'job': job,
-      };
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'job': job,
+    };
+  }
 }
-

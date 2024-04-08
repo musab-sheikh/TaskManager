@@ -66,48 +66,106 @@
 // }
 
 
+// import 'package:flutter/material.dart';
+// import 'package:provider/provider.dart';
+// import 'package:task_manager/Providers/task_provider.dart';
+
+// class TaskScreen extends StatefulWidget {
+//   @override
+//   _TaskScreenState createState() => _TaskScreenState();
+// }
+
+// class _TaskScreenState extends State<TaskScreen> {
+//   int _currentPage = 1;
+
+//   @override
+//   void initState() {
+//     super.initState();
+//     Future.microtask(() =>
+//         Provider.of<TaskProvider>(context, listen: false).fetchTasks(_currentPage));
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     final taskProvider = Provider.of<TaskProvider>(context);
+//     final tasks = taskProvider.tasks;
+
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: Text('Tasks'),
+//       ),
+//       body: ListView.builder(
+//         itemCount: tasks.length,
+//         itemBuilder: (context, index) {
+//           final task = tasks[index];
+//           return ListTile(
+//             title: Text(task.name),
+//             subtitle: Text(task.job),
+//           );
+//         },
+//       ),
+//       floatingActionButton: FloatingActionButton(
+//         onPressed: () {
+//           // Navigate to add/edit task screen
+//         },
+//         child: Icon(Icons.add),
+//       ),
+//     );
+//   }
+// }
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:task_manager/Providers/task_provider.dart';
+import 'package:task_manager/UI/add_edit.dart';
 
-class TaskScreen extends StatefulWidget {
+class TaskListScreen extends StatefulWidget {
   @override
-  _TaskScreenState createState() => _TaskScreenState();
+  _TaskListScreenState createState() => _TaskListScreenState();
 }
 
-class _TaskScreenState extends State<TaskScreen> {
-  int _currentPage = 1;
-
-  @override
-  void initState() {
-    super.initState();
-    Future.microtask(() =>
-        Provider.of<TaskProvider>(context, listen: false).fetchTasks(_currentPage));
-  }
-
+class _TaskListScreenState extends State<TaskListScreen> {
   @override
   Widget build(BuildContext context) {
     final taskProvider = Provider.of<TaskProvider>(context);
-    final tasks = taskProvider.tasks;
 
     return Scaffold(
       appBar: AppBar(
         title: Text('Tasks'),
       ),
       body: ListView.builder(
-        itemCount: tasks.length,
+        itemCount: taskProvider.tasks.length,
         itemBuilder: (context, index) {
-          final task = tasks[index];
-          return ListTile(
-            title: Text(task.name),
-            subtitle: Text(task.job),
+          final task = taskProvider.tasks[index];
+          return Dismissible(
+            key: Key(task.id.toString()),
+            background: Container(color: Colors.red),
+            onDismissed: (direction) {
+              // Implement your delete logic here
+              taskProvider.deleteTask(task.id);
+            },
+            child: ListTile(
+              title: Text(task.name),
+              subtitle: Text(task.job),
+              onTap: () {
+ Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AddEditTaskScreen(task: task),
+                ),
+              );              },
+            ),
           );
         },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Navigate to add/edit task screen
-        },
+ Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AddEditTaskScreen(),
+                ),
+              );        },
         child: Icon(Icons.add),
       ),
     );

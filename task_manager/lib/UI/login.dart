@@ -46,6 +46,16 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               SizedBox(height: 30),
+               ElevatedButton(
+                onPressed: _isLoading ? null : _handleRegister, // Disable button during loading
+                style: ElevatedButton.styleFrom(
+                  minimumSize: Size(double.infinity, 50),
+                ),
+                child: _isLoading 
+                  ? CircularProgressIndicator(color: Colors.white)
+                  : Text('Register'),
+              ),
+              SizedBox(height: 30),
               ElevatedButton(
                 onPressed: _isLoading ? null : _handleLogin, // Disable button during loading
                 style: ElevatedButton.styleFrom(
@@ -66,6 +76,29 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
+void _handleRegister() async {
+  setState(() { 
+    _isLoading = true; // Show loading indicator
+  });
+
+  try {
+    bool success = await AuthService().signUp(_emailController.text, _passwordController.text);
+    if (success) {
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => TaskListScreen()));
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Registration Failed')));
+    }
+  } catch (e) {
+    ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('An error occurred: $e')));
+  } finally {
+    setState(() {
+      _isLoading = false; // Hide loading indicator
+    });
+  }
+}
+
   void _handleLogin() async {
     setState(() { 
       _isLoading = true; // Show loading indicator
@@ -75,8 +108,9 @@ class _LoginScreenState extends State<LoginScreen> {
       bool success = await AuthService().login(_emailController.text, _passwordController.text);
       if (success) {
           print('Chal gya');
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => TaskScreen())); 
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => TaskListScreen())); 
       } else {
+        
         ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Login Failed')));
       }

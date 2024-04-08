@@ -25,5 +25,24 @@ class TaskProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  // Implement addTask, editTask, deleteTask and make sure to call _localStorageService.saveTasks(_tasks) after updating the list
+  void addTask(Task task) async {
+    _tasks.add(task);
+    await _localStorageService.saveTasks(_tasks);
+    notifyListeners();
+  }
+
+  void editTask(Task updatedTask) async {
+    int index = _tasks.indexWhere((task) => task.id == updatedTask.id);
+    if(index != -1) {
+      _tasks[index] = updatedTask;
+      await _localStorageService.saveTasks(_tasks);
+      notifyListeners();
+    }
+  }
+
+  void deleteTask(int taskId) async {
+    _tasks.removeWhere((task) => task.id == taskId);
+    await _localStorageService.saveTasks(_tasks);
+    notifyListeners();
+  }
 }
