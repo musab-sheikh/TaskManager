@@ -1,130 +1,154 @@
-import 'package:flutter/foundation.dart';
 import 'dart:convert'; 
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:task_manager/Authentication/local_storage_service.dart';
 import 'package:task_manager/Task_Management/task_model.dart';
 import 'package:http/http.dart' as http;
 
-
-
 // class TaskService {
-//   // Sample tasks (initialize from local storage)
-//   late List<Task> _tasks; 
+//   final String _baseUrl = 'https://reqres.in/api';
+//     final LocalStorageService _localStorage = LocalStorageService(); // Instance of storage service
 
-//   TaskService() {
-//     _loadTasks();
-//   }
+//   List<Task> _tasks = [];
 
-//   Future<List<Task>> getTasks(int pageNumber) async {
-//     // Simulate pagination from 'users' API in reqres.in
-//     final response =
-//         await Future.delayed(const Duration(milliseconds: 800), () {
-//       return [
-//         {
-//           'id': 1 + (pageNumber - 1) * 6,
-//           'first_name': 'Task ${1 + (pageNumber - 1) * 6}'
-//         },
-//         {
-//           'id': 2 + (pageNumber - 1) * 6,
-//           'first_name': 'Task ${2 + (pageNumber - 1) * 6}'
-//         },
-//         // ... Up to 6 items
-//       ];
-//     });
+//    // Fetch tasks
+//   Future<List<Task>> fetchTasks(int page) async {
+//     final Uri url = Uri.https(_baseUrl, '/users', {'page': '$page'});
+//     final response = await http.get(url);
 
-//     // Map simulated response to Task objects
-//     return response
-//         .map((user) => Task(
-//             id: (user['id'] as int),
-//             title: (user['first_name'] as String) // Using first_name for task title
-//             ))
-//         .toList();
-//   }
+//     if (response.statusCode == 200) {
+//       final data = jsonDecode(response.body);
+//       final List<dynamic> tasksJson = data['data'];
 
-//   Future<void> addTask(String title) async {
-//     final newId = _tasks.isNotEmpty ? _tasks.last.id + 1 : 1; 
-//     _tasks.add(Task(id: newId, title: title));
-//     await _saveTasks(); 
-//   }
-
-//   Future<void> updateTask(Task task) async {
-//     final index = _tasks.indexWhere((element) => element.id == task.id);
-//     if (index != -1) {
-//       _tasks[index] = task; // Replace the existing task
-//       await _saveTasks();
+//       _tasks = tasksJson.map((json) => Task.fromJson(json)).toList();
+//       return _tasks;
+//     } else {
+//       throw Exception('Failed to load tasks');
 //     }
 //   }
+//   // Simulate adding a task
+//  Future<Task> addTask(String name, String job) async {
+//     final Uri url = Uri.https(_baseUrl, '/users');
+//     final response = await http.post(
+//       url, 
+//       body: jsonEncode({'name': name, 'job': job})
+//     );
 
-//   Future<void> deleteTask(int id) async {
-//     _tasks.removeWhere((element) => element.id == id);
-//     await _saveTasks();
-//   }
-
-//   // Internal methods for local storage
-//   Future<void> _loadTasks() async {
-//     final prefs = await SharedPreferences.getInstance();
-//     final tasksJson = prefs.getString('tasks');
-//     if (tasksJson != null) {
-//       _tasks = (jsonDecode(tasksJson) as List).map((e) => Task.fromJson(e)).toList();
-//     }  else {
-//       _tasks = [ 
-//         Task(id: 1, title: 'Sample Task 1'),
-//         Task(id: 2, title: 'Sample Task 2', isCompleted: true),
-//       ]; 
+//     if (response.statusCode == 201) {
+//       final newTaskData = jsonDecode(response.body);
+//       return Task.fromJson(newTaskData);
+//     } else {
+//       throw Exception('Failed to add task');
 //     }
 //   }
+// Future<Task> editTask(int taskId, String name, String job) async {
+//   final Uri url = Uri.https(_baseUrl, '/api/users/$taskId');
+//   final response = await http.put(
+//     url,
+//     body: jsonEncode({'name': name, 'job': job})
+//   );
 
-//   Future<void> _saveTasks() async {
-//     final prefs = await SharedPreferences.getInstance();
-//     final tasksJson = jsonEncode(_tasks.map((task) => task.toJson()).toList());
-//     await prefs.setString('tasks', tasksJson);
+//   if (response.statusCode == 200) {
+//     final updatedTaskData = jsonDecode(response.body);
+//     return Task.fromJson(updatedTaskData); // Assuming your Task model
+//   } else {
+//     throw Exception('Failed to edit task');
 //   }
 // }
 
+//   // Simulate deleting a task
+//   Future<void> deleteTask(int taskId) async {
+//     // For simulation purposes with reqres.in, remove the task from the list
+//     // In a real scenario, you would make a DELETE request to your backend
+//     _tasks.removeWhere((task) => task.id == taskId);
+//   }
+// }
 
 class TaskService {
-  final String _baseUrl = 'reqres.in';
+  final String _baseUrl = 'https://reqres.in/api';
+  final LocalStorageService _localStorage = LocalStorageService();
+
   List<Task> _tasks = [];
 
-   // Fetch tasks
+  // Fetch tasks 
   Future<List<Task>> fetchTasks(int page) async {
-    final Uri url = Uri.https(_baseUrl, '/api/users', {'page': '$page'});
+    // Try loading from local storage first
+    try {
+      List<Task> storedTasks = await _localStorage.loadTasks();
+      if (storedTasks.isNotEmpty) {
+        _tasks = storedTasks;
+        return _tasks;
+      }
+    } catch (e) {
+      print('Error loading tasks locally: $e');
+    }
+
+    // If local load fails or data is empty, fetch from API
+    final Uri url = Uri.https(_baseUrl, '/users', {'page': '$page'});
     final response = await http.get(url);
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       final List<dynamic> tasksJson = data['data'];
-
       _tasks = tasksJson.map((json) => Task.fromJson(json)).toList();
+
+      // Save to storage after successful fetch
+      _localStorage.saveTasks(_tasks); 
       return _tasks;
     } else {
       throw Exception('Failed to load tasks');
     }
   }
-  // Simulate adding a task
-  Future<Task> addTask(Task task) async {
-    // For simulation purposes with reqres.in, we'll just add the task to our list
-    // In a real scenario, you would make a POST request to your backend
-    _tasks.add(task);
-    return task; // Return the added task
-  }
 
-  // Simulate editing a task
-  Future<Task> editTask(Task task) async {
-    // For simulation purposes with reqres.in, find the task and replace it
-    // In a real scenario, you would make a PUT/PATCH request to your backend
-    final taskIndex = _tasks.indexWhere((t) => t.id == task.id);
-    if(taskIndex != -1) {
-      _tasks[taskIndex] = task;
-      return task; // Return the edited task
+  // Add Task
+  Future<Task> addTask(String name, String job) async {
+    final Uri url = Uri.https(_baseUrl, '/users');
+    final response = await http.post(
+      url, 
+      body: jsonEncode({'name': name, 'job': job})
+    );
+
+    if (response.statusCode == 201) {
+      final newTaskData = jsonDecode(response.body);
+      Task task = Task.fromJson(newTaskData);
+
+      // Update local data
+      _tasks.add(task);
+      _localStorage.saveTasks(_tasks); 
+      return task;
     } else {
-      throw Exception('Task not found');
+      throw Exception('Failed to add task');
     }
   }
 
-  // Simulate deleting a task
+  // Edit Task 
+  Future<Task> editTask(int taskId, String name, String job) async {
+    final Uri url = Uri.https(_baseUrl, '/api/users/$taskId');
+    final response = await http.put(
+      url,
+      body: jsonEncode({'name': name, 'job': job})
+    );
+
+    if (response.statusCode == 200) {
+      final updatedTaskData = jsonDecode(response.body);
+      Task task = Task.fromJson(updatedTaskData); 
+
+      // Update local data
+      final taskIndex = _tasks.indexWhere((t) => t.id == taskId);
+      if (taskIndex != -1) {
+        _tasks[taskIndex] = task;
+        _localStorage.saveTasks(_tasks); 
+      }
+      return task; 
+    } else {
+      throw Exception('Failed to edit task');
+    }
+  }
+
+  // Delete Task
   Future<void> deleteTask(int taskId) async {
-    // For simulation purposes with reqres.in, remove the task from the list
-    // In a real scenario, you would make a DELETE request to your backend
+    // For simulation with reqres.in, locally remove from the list
+    // If you have a real backend, implement the DELETE request here
+
     _tasks.removeWhere((task) => task.id == taskId);
+    _localStorage.saveTasks(_tasks); 
   }
 }

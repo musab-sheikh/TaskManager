@@ -5,6 +5,8 @@ import 'package:task_manager/UI/task_screen.dart';
 import 'package:task_manager/UI/theme_manager.dart';
 
 class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
+
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
@@ -21,7 +23,7 @@ class _LoginScreenState extends State<LoginScreen> {
       appBar:AppBar(
   actions: [
     IconButton(
-      icon: Icon(Icons.brightness_6),
+      icon: const Icon(Icons.brightness_6),
       onPressed: () {
         final themeManager = Provider.of<ThemeManager>(context, listen: false);
         themeManager.setTheme(themeManager.getTheme().brightness == Brightness.dark
@@ -33,57 +35,57 @@ class _LoginScreenState extends State<LoginScreen> {
 ),
       body: SafeArea(
         child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 40),
+          padding: const EdgeInsets.symmetric(horizontal: 40),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(
+              const Text(
                 'Welcome Back!',
                 style: TextStyle(
                   fontSize: 30,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               TextFormField(
                 controller: _emailController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Email',
                   border: OutlineInputBorder(),
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               TextFormField(
                 controller: _passwordController,
                 obscureText: true,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Password',
                   border: OutlineInputBorder(),
                 ),
               ),
-              SizedBox(height: 30),
+              const SizedBox(height: 30),
                ElevatedButton(
                 onPressed: _isLoading ? null : _handleRegister, // Disable button during loading
                 style: ElevatedButton.styleFrom(
-                  minimumSize: Size(double.infinity, 50),
+                  minimumSize: const Size(double.infinity, 50),
                 ),
                 child: _isLoading 
-                  ? CircularProgressIndicator(color: Colors.white)
-                  : Text('Register'),
+                  ? const CircularProgressIndicator(color: Colors.white)
+                  : const Text('Register'),
               ),
-              SizedBox(height: 30),
+              const SizedBox(height: 30),
               ElevatedButton(
                 onPressed: _isLoading ? null : _handleLogin, // Disable button during loading
                 style: ElevatedButton.styleFrom(
-                  minimumSize: Size(double.infinity, 50),
+                  minimumSize: const Size(double.infinity, 50),
                 ),
                 child: _isLoading 
-                  ? CircularProgressIndicator(color: Colors.white)
-                  : Text('Login'),
+                  ? const CircularProgressIndicator(color: Colors.white)
+                  : const Text('Login'),
               ),
               TextButton(
                 onPressed: () {},
-                child: Text('Forgot Password?'),
+                child: const Text('Forgot Password?'),
               ),
             ],
           ),
@@ -100,10 +102,10 @@ void _handleRegister() async {
   try {
     bool success = await AuthService().signUp(_emailController.text, _passwordController.text);
     if (success) {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => TaskListScreen()));
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const TaskListScreen()));
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Registration Failed')));
+          const SnackBar(content: Text('Registration Failed')));
     }
   } catch (e) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -124,11 +126,11 @@ void _handleRegister() async {
       bool success = await AuthService().login(_emailController.text, _passwordController.text);
       if (success) {
           print('Chal gya');
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => TaskListScreen())); 
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const TaskListScreen())); 
       } else {
         
         ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Login Failed')));
+            const SnackBar(content: Text('Login Failed')));
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(

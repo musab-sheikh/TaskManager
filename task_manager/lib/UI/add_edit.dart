@@ -8,7 +8,7 @@ import 'package:task_manager/UI/theme_manager.dart';
 class AddEditTaskScreen extends StatefulWidget {
   final Task? task;
 
-  AddEditTaskScreen({this.task});
+  const AddEditTaskScreen({super.key, this.task});
 
   @override
   _AddEditTaskScreenState createState() => _AddEditTaskScreenState();
@@ -52,7 +52,7 @@ class _AddEditTaskScreenState extends State<AddEditTaskScreen> {
                 title: Text(widget.task == null ? 'Add Task' : 'Edit Task'),
   actions: [
     IconButton(
-      icon: Icon(Icons.brightness_6),
+      icon: const Icon(Icons.brightness_6),
       onPressed: () {
         final themeManager = Provider.of<ThemeManager>(context, listen: false);
         themeManager.setTheme(themeManager.getTheme().brightness == Brightness.dark
@@ -70,7 +70,7 @@ class _AddEditTaskScreenState extends State<AddEditTaskScreen> {
             children: <Widget>[
               TextFormField(
                 initialValue: _name,
-                decoration: InputDecoration(labelText: 'Task Name'),
+                decoration: const InputDecoration(labelText: 'Task Name'),
                 onSaved: (value) => _name = value!,
                 validator: (value) {
                   if (value!.isEmpty) {
@@ -81,7 +81,7 @@ class _AddEditTaskScreenState extends State<AddEditTaskScreen> {
               ),
               TextFormField(
                 initialValue: _job,
-                decoration: InputDecoration(labelText: 'Task Description'),
+                decoration: const InputDecoration(labelText: 'Task Description'),
                 onSaved: (value) => _job = value!,
                 validator: (value) {
                   if (value!.isEmpty) {
@@ -90,10 +90,10 @@ class _AddEditTaskScreenState extends State<AddEditTaskScreen> {
                   return null;
                 },
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: _submit,
-                child: Text('Save Task'),
+                child: const Text('Save Task'),
               ),
             ],
           ),

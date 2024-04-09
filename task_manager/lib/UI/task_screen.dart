@@ -81,6 +81,8 @@ import 'package:task_manager/UI/add_edit.dart';
 import 'package:task_manager/UI/theme_manager.dart';
 
 class TaskListScreen extends StatefulWidget {
+  const TaskListScreen({super.key});
+
   @override
   _TaskListScreenState createState() => _TaskListScreenState();
 }
@@ -93,10 +95,10 @@ class _TaskListScreenState extends State<TaskListScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Task List'),
+        title: const Text('Task List'),
         actions: [
           IconButton(
-            icon: Icon(Icons.brightness_6),
+            icon: const Icon(Icons.brightness_6),
             onPressed: () {
               themeManager.setTheme(themeManager.getTheme().brightness == Brightness.dark ? ThemeData.light() : ThemeData.dark());
               // Using ScaffoldMessenger to show a SnackBar message for theme change
@@ -117,13 +119,13 @@ class _TaskListScreenState extends State<TaskListScreen> {
             background: Container(
               color: Colors.red,
               alignment: Alignment.centerRight,
-              padding: EdgeInsets.symmetric(horizontal: 20.0),
-              child: Icon(Icons.delete, color: Colors.white),
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: const Icon(Icons.delete, color: Colors.white),
             ),
             onDismissed: (direction) {
               taskProvider.deleteTask(task.id);
               // Showing a SnackBar on deletion
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                 content: Text('Task deleted'),
               ));
             },
@@ -140,9 +142,9 @@ class _TaskListScreenState extends State<TaskListScreen> {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => AddEditTaskScreen())),
-        child: Icon(Icons.add),
-        tooltip: 'Add Task', // Tooltip for FAB
+        onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const AddEditTaskScreen())),
+        tooltip: 'Add Task',
+        child: const Icon(Icons.add), // Tooltip for FAB
       ),
     );
   }
