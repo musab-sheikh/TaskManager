@@ -1,79 +1,3 @@
-
-// import 'package:flutter/material.dart';
-// import 'package:provider/provider.dart';
-// import 'package:task_manager/Providers/task_provider.dart';
-// import 'package:task_manager/UI/add_edit.dart';
-// import 'package:flutter/material.dart';
-// import 'package:provider/provider.dart';
-// import 'package:task_manager/Providers/task_provider.dart';
-// import 'package:task_manager/UI/add_edit.dart';
-// import 'package:task_manager/UI/theme_manager.dart';
-
-// class TaskListScreen extends StatefulWidget {
-//   @override
-//   _TaskListScreenState createState() => _TaskListScreenState();
-// }
-
-
-// class _TaskListScreenState extends State<TaskListScreen> {
-//   @override
-//   Widget build(BuildContext context) {
-//     final taskProvider = Provider.of<TaskProvider>(context);
-
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('Task List'),
-//   actions: [
-//     IconButton(
-//       icon: Icon(Icons.brightness_6),
-//       onPressed: () {
-//         final themeManager = Provider.of<ThemeManager>(context, listen: false);
-//         themeManager.setTheme(themeManager.getTheme().brightness == Brightness.dark
-//             ? ThemeData.light()
-//             : ThemeData.dark());
-//       },
-//     ),
-//   ],
-// ),
-//       body: ListView.builder(
-//         itemCount: taskProvider.tasks.length,
-//         itemBuilder: (context, index) {
-//           final task = taskProvider.tasks[index];
-//           return Dismissible(
-//             key: Key(task.id.toString()),
-//             background: Container(color: Colors.red, child: Icon(Icons.delete)),
-//             onDismissed: (direction) {
-//               // Implement your delete logic here
-//               taskProvider.deleteTask(task.id);
-//             },
-//             child: ListTile(
-//               title: Text(task.name),
-//               subtitle: Text(task.job),
-//               onTap: () {
-//  Navigator.push(
-//                 context,
-//                 MaterialPageRoute(
-//                   builder: (context) => AddEditTaskScreen(task: task),
-//                 ),
-//               );              },
-//             ),
-//           );
-//         },
-//       ),
-//       floatingActionButton: FloatingActionButton(
-//         onPressed: () {
-//  Navigator.push(
-//                 context,
-//                 MaterialPageRoute(
-//                   builder: (context) => AddEditTaskScreen(),
-//                 ),
-//               );        },
-//         child: Icon(Icons.add),
-//       ),
-//     );
-//   }
-// }
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:task_manager/Providers/task_provider.dart';
@@ -144,7 +68,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
       floatingActionButton: FloatingActionButton(
         onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const AddEditTaskScreen())),
         tooltip: 'Add Task',
-        child: const Icon(Icons.add), // Tooltip for FAB
+        child: const Icon(Icons.add), 
       ),
     );
   }

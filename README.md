@@ -1,2 +1,2 @@
-# TaskManager
- 
+Simple Task Manager Application built using flutter. reqres.in is used for backend. 
+run main.dart and sign in or register using "eve.holt@reqres.in" email and any password as long as it meets the app's requirements. 
